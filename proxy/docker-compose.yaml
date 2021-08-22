@@ -1,0 +1,35 @@
+version: "2"
+services:
+  nginx:
+    build: nginx
+    image: proxy_nginx
+    #entrypoint: ["ls",  "-a" , "/etc/nginx/tls"]
+    depends_on: [orthanc-a]
+    restart: unless-stopped
+    #ports: ["443:443"]
+    ports: ["80:80"]
+    volumes: ["nginx-tls:/etc/nginx/tls:Z"]
+  orthanc-a:
+    # use at least osimis/orthanc:20.12.1
+    build: orthanc-a
+    image: proxy_orthanc_a
+    #image: osimis/orthanc
+    volumes: ["orthanc-a-tls:/etc/orthanc/tls:Z"]
+    ports: ["8042:8042"]
+    environment:
+      VERBOSE_STARTUP: "true"
+      VERBOSE_ENABLED: "true"
+
+      # you must enable the StoneViewer and the DicomWeb plugins
+      #STONE_WEB_VIEWER_PLUGIN_ENABLED: "true"
+      OSIMIS_WEB_VIEWER1_PLUGIN_ENABLED: "true"
+      #DICOM_WEB_PLUGIN_ENABLED: "true"
+
+      # StoneViewer configurations
+      ORTHANC__STONE_WEB_VIEWER__DATE_FORMAT: "DD/MM/YYYY"
+
+      ORTHANC__REGISTERED_USERS: |
+        {"demo": "demo"}
+volumes:
+  nginx-tls:
+  orthanc-a-tls:

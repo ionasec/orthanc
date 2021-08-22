@@ -1,0 +1,9 @@
+version: "2"
+services:
+  nginx:
+    build: nginx
+    #entrypoint: ["ls",  "-a" , "/etc/nginx/tls"]
+    #depends_on: [orthanc-a, orthanc-b]
+    restart: unless-stopped
+    ports: ["80:80"]
+    #volumes: ["nginx-tls:/etc/nginx/tls:Z"]
